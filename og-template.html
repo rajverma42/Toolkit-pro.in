@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  .canvas{
+    width:1200px;height:630px;
+    background:#191815;
+    position:relative;
+    font-family:"IBM Plex Mono",monospace;
+    overflow:hidden;
+  }
+  .canvas::before{
+    content:'';
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(to right, rgba(238,232,217,0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(238,232,217,0.045) 1px, transparent 1px);
+    background-size:40px 40px;
+  }
+  .glow{
+    position:absolute; top:-180px; right:-160px; width:560px; height:560px; border-radius:50%;
+    background:radial-gradient(circle, rgba(227,161,63,0.28), transparent 70%);
+  }
+  .content{position:relative; height:100%; display:flex; flex-direction:column; justify-content:space-between; padding:56px 64px;}
+  .brand-row{display:flex; align-items:center; gap:16px;}
+  .mark{width:56px;height:56px;border-radius:14px;background:#E3A13F;display:flex;align-items:center;justify-content:center;flex:none;}
+  .mark svg{width:32px;height:32px;color:#1A1710;}
+  .wordmark{font-family:"Big Shoulders Display",sans-serif;font-weight:800;font-size:34px;color:#EEE8D9;text-transform:uppercase;letter-spacing:.01em;}
+  .middle{max-width:920px;}
+  .headline{
+    font-family:"Big Shoulders Display",sans-serif; font-weight:900; text-transform:uppercase;
+    font-size:96px; line-height:0.96; color:#EEE8D9; letter-spacing:0.002em;
+  }
+  .headline .accent{color:#E3A13F;}
+  .sub{font-size:19px; color:#A39C86; margin-top:22px; letter-spacing:.01em;}
+  .cats{display:flex; gap:28px; flex-wrap:wrap;}
+  .cat{display:flex; align-items:center; gap:9px; font-size:14px; color:#c9c2b0; text-transform:uppercase; letter-spacing:.05em;}
+  .dot{width:10px;height:10px;border-radius:50%;}
+  .foot{display:flex; justify-content:space-between; align-items:flex-end;}
+  .url{font-size:15px; color:#6f6a5a; letter-spacing:.04em;}
+</style></head>
+<body>
+  <div class="canvas">
+    <div class="glow"></div>
+    <div class="content">
+      <div class="brand-row">
+        <div class="mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 7v10l9 5 9-5V7z"/><circle cx="12" cy="12" r="3.4"/></svg>
+        </div>
+        <span class="wordmark">Toolkit&nbsp;Pro</span>
+      </div>
+      <div class="middle">
+        <div class="headline">100+ Tools.<br>Zero <span class="accent">AI.</span></div>
+        <div class="sub">Text, image &amp; design, calculators and dev tools — every one runs instantly in your browser. No sign-up, no uploads, no tracking.</div>
+      </div>
+      <div class="foot">
+        <div class="cats">
+          <div class="cat"><span class="dot" style="background:#63B6AF"></span>Text &amp; Writing</div>
+          <div class="cat"><span class="dot" style="background:#B592D6"></span>Image &amp; Design</div>
+          <div class="cat"><span class="dot" style="background:#8FC183"></span>Calculators</div>
+          <div class="cat"><span class="dot" style="background:#82AEDA"></span>Dev Tools</div>
+        </div>
+        <span class="url">www.toolkit-pro.in</span>
+      </div>
+    </div>
+  </div>
+</body></html>
