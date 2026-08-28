@@ -4,17 +4,21 @@
    locally in your browser" promise. No analytics, no external caching,
    nothing beyond same-origin static files. */
 
-const CACHE_VERSION = 'tp-v4';
+const CACHE_VERSION = 'tp-v6';
+/* Relative (no leading slash) so these resolve correctly whether the site
+   is hosted at a domain root or under a GitHub Pages project subpath --
+   relative URLs in a service worker resolve against the SW script's own
+   location, not the page that registered it. */
 const CORE_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/favicon.ico',
-  '/favicon-16.png',
-  '/favicon-32.png',
-  '/icon-192.png',
-  '/icon-512.png',
-  '/apple-touch-icon.png'
+  './',
+  'index.html',
+  'manifest.json',
+  'favicon/favicon.ico',
+  'favicon/favicon-16.png',
+  'favicon/favicon-32.png',
+  'favicon/icon-192.png',
+  'favicon/icon-512.png',
+  'favicon/apple-touch-icon.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -53,7 +57,7 @@ self.addEventListener('fetch', (event) => {
           return res;
         })
         .catch(() =>
-          caches.match(req).then((cached) => cached || caches.match('/index.html'))
+          caches.match(req).then((cached) => cached || caches.match('index.html'))
         )
     );
     return;
