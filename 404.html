@@ -17,12 +17,12 @@
 <meta name="description" content="This page doesn't exist on Toolkit Pro. Browse all 100+ free browser-based tools instead.">
 <meta name="robots" content="noindex, follow">
 <meta name="theme-color" content="#2563EB">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="favicon/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -675,6 +675,16 @@ mark.hit{background:var(--accent-soft);color:var(--text);border-radius:2px;paddi
 .about-stat .stat-lbl{font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.04em; margin-top:2px; display:block;}
 
 </style>
+<script>
+  /* Tool pages used to live at the site root (/tool-<slug>.html) and were
+     indexed and bookmarked from there. They now live under /tools/, so send
+     those old addresses on to the new one instead of showing this page.
+     Runs before the 404 renders so there is no visible flash. */
+  (function(){
+    var m = location.pathname.match(/^\/tool-([a-z0-9-]+)\.html$/);
+    if (m) { location.replace('/tools/tool-' + m[1] + '.html' + location.search + location.hash); }
+  })();
+</script>
 </head>
 <body>
 
@@ -917,7 +927,7 @@ mark.hit{background:var(--accent-soft);color:var(--text);border-radius:2px;paddi
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load', function(){
-    navigator.serviceWorker.register('/sw.js').catch(function(){});
+    navigator.serviceWorker.register('sw.js').catch(function(){});
   });
 }
 </script>
