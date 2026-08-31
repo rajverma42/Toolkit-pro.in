@@ -37,6 +37,10 @@
 <link rel="icon" type="image/png" sizes="192x192" href="../favicon/icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="../favicon/apple-touch-icon.png">
 <link rel="manifest" href="../manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -651,6 +655,20 @@ mark.hit{background:var(--accent-soft);color:var(--text);border-radius:2px;paddi
 
 /* ============ DOCUMENT / PROSE PAGES ============ */
 .doc-shell{max-width:760px; margin:0 auto; padding:48px 20px 80px;}
+@media (prefers-reduced-motion:no-preference){
+  .doc-shell > *{opacity:0; animation:tpDocRise .5s cubic-bezier(.16,.8,.3,1) forwards;}
+  .doc-shell > *:nth-child(1){animation-delay:.02s;}
+  .doc-shell > *:nth-child(2){animation-delay:.06s;}
+  .doc-shell > *:nth-child(3){animation-delay:.1s;}
+  .doc-shell > *:nth-child(4){animation-delay:.14s;}
+  .doc-shell > *:nth-child(n+5){animation-delay:.18s;}
+  .doc-card{transition:transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease, border-color .15s ease;}
+  .doc-card:hover{transform:translateY(-3px); box-shadow:0 10px 24px var(--shadow);}
+  .tp-breadcrumb a{transition:color .15s ease;}
+  .btn, .doc-cta a, .doc-cta button{transition:transform .15s cubic-bezier(.34,1.56,.64,1), border-color .12s ease, background .12s ease, color .12s ease, box-shadow .15s ease;}
+  .btn:active, .doc-cta a:active, .doc-cta button:active{transform:scale(.96);}
+}
+@keyframes tpDocRise{from{opacity:0; transform:translateY(14px);}to{opacity:1; transform:translateY(0);}}
 .doc-eyebrow{
   font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.09em; text-transform:uppercase;
   color:var(--accent); margin-bottom:10px;
@@ -762,6 +780,35 @@ mark.hit{background:var(--accent-soft);color:var(--text);border-radius:2px;paddi
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Use the Discount Calculator",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Open the Discount Calculator tool."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Enter the original price of the item."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Enter the discount percentage being offered."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "View the amount saved and the final sale price, updated instantly."
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -769,7 +816,7 @@ mark.hit{background:var(--accent-soft);color:var(--text);border-radius:2px;paddi
   <div class="site-topbar-inner">
     <a href="../index.html" class="brand" style="text-decoration:none;color:inherit">
       <div class="brand-mark">
-        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAUW0lEQVR42u2beZxdxXXnv1X33rf269e7pNaONhwESAKzCgyKMQwECNhSxgTHYIINMZixM86CHQuIkwyBSYiZOIQxGRjjTRhjENjsRkICCYRAbrR1q9Uttbpbvbx9u0vdqvnjtQTEnvkEhCV/PtO/z6c+97376t577q/OOXWqznkwiUlMYhKTmMQkJjGJSUxiEpM42hAf6t1WG7nyBMRo+4d83/8gOsYwj6xEI4T57aLZGLnaGPnbIs7KNcZi9Ycjz5GP9BpjsUqEANF/MXNOmsOiRCTsQGIBWNICHYIEePdnQFtACIf7WBM/hPW+QGyiS0BI+O7nat77Hby8aw1v62Y7t4ixQxrN7UIfO4ImyGl/wF++YK7ztbak/lg0JuPGrt9ZAOJdx/c8cOK8+X8IIgRUFFgC4ladVw2E5pDi1pueIMwE4PlkRgqs3baTO7wvib4jJUkciVkhhG6/X12zaIH1QFMKOTIKFRetQUtZf0EpJkgS75D1bgJ+rUSHCAAumqYZcmFbQVIJICIgKuukHCZIgzEICaIxjuyYCsMjjPfuDS4f+0LklUOyHj2C1hiLVejE3ZUl8+bHtyQcxIFxQseWlmMbYUuBbYP59wS9S3P+bwSZCeMqBXBaKzx0pm+ylUDsLsAruQgbMxZ9FYkQ7xAEdQv1lcEPjBGgZk6XzsioPriru3ISt6bGJx74vp23fQTWaRob3D/DlrJ/SKlIxLJ1aFAGfAG1GjTG3iHnkGRy4sUOnf91RFkCXA9WTVfUXIWnDDMtl8+1F3CGqubNzEyRSEfREyNc8cFoiNbtTQShcfb2qaB9mj21vdm5ZUyIr7Pa2IA6ChpkBAjDyv3xKec299gNDZ2eFxjbkhIBBkHK1vz5Ms30qI+vDEJAPBpBCgi1JuLYBCpEa42UYDTGGCO0MWhtKFd9wlBz+UnNVGseYRhS8wLKxSI/Wb+HSPts5sxsIRqNIKQgGrPNvduM2JqPERUhoREoFerGpqioZKtvD9/490swt5mjo0GrEdyOob3U4deSbYEMhA5DQmmwJeSqIbeeVuOPT2wxhaotVKBoSEZ4ef0rPPfcizSmU3hewJ/ceJ1pb28WShmMEYQ6JAw1oTb09I0jrBDfTxJ1JAXXI2pb9I+Ns+XZR1m+/CxWnPsHCAsMkilNjmip7jWXP5sSXkMTwih0aES1pEXgqenc+Lk0QuQwRrxfkj64iZnQ8v3AkrYiDEOklATGEHdrzHPy3PVPPxEDgwcxxlCr1di+s4eRsXGa042MjWXoHRgWU6a0EwQhiAnPZAwq8Ek3pbnuc1czMJxjdmczAg1C0tPTbdb/4lmxb6CPbPYgxYpBCE26Icr5Zy8Tc00nW7M26aSDCg0GifL8CKGJfdDX/OAEuS7KDxG2wmiNESG+r+gQLs889Qz33nknBDXsxiYuWHGW2dfXL4b7B9jfkMQYzfceePhXrd2yIMzwZ7d+g9bmNCNj+8jmI8SiFn4Q8MbWt0QxX6arq5uu17YzY4aH50vGRkO2XHwh6TNuJCjHCJ00oTYYFKGvZFzkZA3gttveHVn8h3BE0aZWIWEQogOF8hWogPFMiaFMjYbmVkimiToxPnP1fxZ7d27g5q983oSuj7SjRFtbiba24TS3EGlpJdrWhpVIMn3+Ui6/4jL6B4ZJxCIcHMvh+4pKucQvf7kTYUeJRBI89JUq+19azsDW87hjpSKTUwzsPwieSxAoQl+hgpDQD44o1PsABN02Ebd66EChVYAO6o3AJ6gqBgoWd//1LVz2exdQyRf5/E1fY+0zG7jn7jvEtX/8h4RaorEJtCSWTBNLNpJsaELLCJ/85GUkGhoZGctjMNRqLqWKx8D+AwzsH8CYJJctK/NHi0uYXJTopnX81TkFLpldo/uAwjIByleESk3IpwRlTxxFgg5dqY3xfbQfTDQf43oQ+AyUHBYtPI77vvXXTD9uJrY0tDQlGc+VWXH+chwp+NpXbzC3/8UN+EFINJFCYTFrzizOPut0du3Zj2UJcoUyQkC5UqPr7R1ksgVkMsLNxw+hmxYTZn9JefMI428I2ivDhLUQGSpCP0AHEyQpBdQ4+j7IczFKGfwAo1TdtH0PEdQomjTPrt/Gueedw8+feBBhNO0dHfzs+VfJjueQkQizj5snrll5IZu2dLFhaw8IycUXLMcLBblslngsghSCiGMDNbq6tuNXNGefVGb5HAnt7cg3f0GlKBns1rwsZ4HQ6EBhPB8hJUJYEIQYdSw0yHUh8IQJfPBchFurk+a7VHLwxKtD/PO/PMiU9jY6Z8xg4+vbyefzaKUQQvAP//QAPf1DTJ/aRml8lOZ0C/PmH8/+gSF04DM+nsXzfUrlCqVikd27utFE+PyCYeSc+YTZfvwBRXa/ptuawqNjC5CiinZraN8/bPZGBQKXY6BBuizwXRA2+C6m6kGtQgMlPnlBK59YdjkJWeHJn71AIhGjrX0Kp5z8EUYODjN3znS6Nm7kxlu+wfXXruL+ex/kwvOm0BDN0DtoiMegqaqQAiLRGMMjA3T3DvGRmVWuPhFom4LZvI5cRlDMGh6Tczj5+CbeGq5ApQTxFMZxQFqIUEFYPEYa5Faw3TIyn2V+g8/fXBrl0a/M5d++voKzl85icGSct7b38OhPnuS++/8XXhDQMW0av/ux07EaGtiw4VWcZJorLz2DTw7+G9HuB7iyYy2nN7+KCAfpGxjHhD69Pb3k8gVmO1Weyc+mqotEPE1+v+EFr4FHtw5z9e+2meNnpRC5PNKrwcSkYYLgiHYs7CO52JSLqLEcFHJ06F5mx07ijFOv5MVXdzA4NMK3//Vhdrz2CkQS4Hv8zgmLWXbKEpYuXcpHFm9mx5at/OiHP+FTn76KV55t5DuPD/Mnneu4dXmVTONs7g0/zYGRJHv7+owdumIgfSoPZJbw/fu28lkrjvQV/zzYikCw+fWt4uaVn+WLd72BcDtASIyQdQ06Aidtve8r1p0nYJ2Jtp7XHHfEzdet6JBfumImLdGi2L5zDy+u30x7RyelGpjKENve2olMNmC8PDv3DLBg0UIOjmSxhOHtrVsYHRtl//AwTudMiiN72dO7l0Q2ZMruHHMbt/B8ZhprH39BuNUhOjtn0J52eHJjHw9tGuPxfQGjVQ8dSbDjzd189Uur2F+S9PXlkYk4xnaE8L3Qyoz9D9X/RIHzzhOsW/ebX2pIwOsa5byrbC5ZAhd94qMcOO04/uiaG8nm80jpmIUNG/jatQdpji3CS17BrCmWCHzDwtnTQEpOO3mBOfXkhSKbK+B5LjOmT2fZiYvZuediNvsu7a01psYqXNjcZjpuuUEI4SGExHEsTjvtFPKlGkEoiFkGLMcoZUQqFeeEtoBfFHOI1maIxDGh4qibWH0IXPb1H+AHPz1A/3CRoeFR9vTux06mGH7xu+Lem7th/qXcfsM4P317mrn0slU0N9jUPJ98oYzSRiQbUvztPzyA7Ti8/PoeKuUK0YiNkJJXGlso1wKu/HibuOTSs4g6Dh1tTTQ3NdIQjwCYbL4kBoZGGRnNCMux+f6Pf053vwETx/ge+D4oX+BOTGO3H0WCorNidPfk6UxF2LL1TTa9+hbFTI0zl5xGwT2OzS8Mcnrr8zScfA7znL8XP/xxkqWL5zCaKVAsVumc2kbv7h0c2L2F1pYWauUqyvcJtMGEAVODVtxShfGhdl7bksL3PZoaUzQ3pehoa6bmemJgcITRsSyZXAHLsunbP8rYqA0mWt9BUz4EAUaXxFF30p7nQjTBixv6mdaiKBZqVIoRdCCQqTS3dZ3AmhmvkersZe60BP/tzrt4a9dVNKcsRsayTO+cRslq5IqbVuPYNrbjYFkWlhQU3JCKGxAhwPLKbHlrJ/FkihnTYCxfpW8wgzEGzwuouSF+KBkfzZAveezdV4DGTkyoIayvD49NHIQH0VZItjI8NoqItUPUJpVKsvyMRTzqB3x/2zhtQ7085lyHESVKB7u44GOfYff2Ln6xO8P6OZcQdxrRQYjlC3xlqFUUF83VfHQu/OPOOOk9T/GfIoJ582Zz7umLSSWiRBwbA7iuR65QJJPJMzo6zpvbttPVO1bfGdAhKAVacSQMHdF2B01RaJ2LiKYQEkzgUCr7KCM488R5/GjTUjZ+L8/xy/ay/IxlrFv/Mrmix/TpM6jkQ4K+PkwiiRISaoapM1MsjRgu6bC56WMt/M0zgySqHvlyhp49fUxpbWRKayNSSsDg+T7FYoV8oUipVMbzFX6gIQaEYV17VMAxi4OEEBBtwMgoQgKlCrVagNaa1uY00+bOZ+r8fXTv2Ma8uTNZumQJm157nWI+QxifAwPrUDVF46x2/mD5cbQ15/nTyxfyyEu9DIxFkDvWo8jgJT2K+Ry5XI54RCKlwAC+51MuV3E9jyAIwECowvoerq6bmAgVh530UY2khWUO77gLCcICK4Ln19darhcwZ9ZMpnbOorG5nZfXvURTczPHL1rIwYFeDvT3YLl57rh+KZ89Pc1dX1jGvHRIMQDH1Ig5EpE9AJUCvu9RLOTJ5fLkCyWyuSLZbIFcvkixVMFzfXzfBwRKv5MLqi8z1DHSIBMKYQyGenrCGMCyGM8UKZWKlGsB8XiC1vZ2isXpHNi7m+eff4FPfepKkok4m9/owgoGmNEGA31D3PvQ0/TsPUg+P8bbO/fjuUWC7DBhSuInA9xqlrGxMQQhxpgJDjRBoJBS4NiCfKFGUFOIZlOPf0L7GBIkLCOoj5ZBYJQPsTj7RiTf/d460g0a33MpFTKUijmisRgjYxm2vb2LajFLdngX7W0h3/7OD5g+tZVQFZjS1MjBA3uJ2z6bNr/OVec2EgQ+298cYPDACEN9B+r+RwiEEAhhYVk2DQ1JLCfB9n6Njk2tp2rCsO6otRLesdKgw1k7BCKaRMZTiKZOBko5BnJFCH0wLkTylEt9dLaVeP7JH1PzqmDPwSt3UOn36R8p4URcbGsMKQVBUN/nDnwfP1CU/fnolo9SELKedTqUlJcWKAE1DVYEOlohFsdIp54o0xqhwyPyQUc2zR9ObQqM0oSlSn3jXTZBeipWU7JuCqGCSo6hkdcQ6U5kwzx0dBZevBkvmgQ7Bo5TzyeXa/XcsmXV7x2xQOkJv2LAcpCp6DvPRSMMSDRh4NVNS2vQIcJohNH1wTz6JiaNIEQKja4pTljQzDdvXEGu7NEQc+gdzPOX39oKiSQybkO6DR3/PQwSUavytzediOd5RGxJLYBvPrAbpOK5b32cH7/UzxPP7UU3xBnPlVjzV2fS2ZbEU4ZvP7aTNS8MQSoBfohwJFpptBdAzEKgMYfMS5gJH3QsZjEX0Lo+YiJkLFPkkade59rfX4zvVVj7+BYWzo4xb5qFzubQmRwzGqucOEOhDw4yf3qSBZ0JFs1oYEZbFFnMMKtJ83ZXD0Pde/nfq8/i7675CLFilitWLODpjT08/MQWfvTNj/M7MyTRUpbZLRpTztMccTl5fgKqRUzNRegAwnoTWoHHsTKxEKNDsDSjWZfvP7Kdu/48zw9/3sWseR08/OXz0Vpzz8NvMDhS4r9/dQW+F/CjZ6aQzRaJ2BNxS+Dx5H0XsW5TD41NjVx09hyOX9jByY7FT09NMzha5I3tw+zel8FXIbdedTynnjSb/sFxHny8izu+tIJ8oUzZhd//8lpKvgVCIxAT+0HHxAe5CBMiTD17IKSNbI5QrXnM7YjwX284n6v/dA01L+Cp+z9jQqXFX/zji/x8fTfbHv8i3XtH6eoZxfMUX77ufDa83sOddz/Pri1f5+77nqOxJcZ43mPtM9u5Z/Vl/N0t5xB1JHfc8ySxWIzTTp3NlVfdz3Nr/wvPbtzNTbesYbznm1x5/gweXLMTqzmO0KKuScdkLeaZEB2EljB2oBXGQBj4IAxB4JPNl0in40S9CPlCWbheQKohRktTknK5Vl/sGkUibrH+1S6amhpZ/NGZZLJFAhUCGtuWSKOJRyR3/esGfvDYNvJDFe6+6wq6dg1RzfmUK1Uc2yLVkiRQinKxCDrAKAtpWZjQV1iVD7zeeP87iqyrH1QqINF6faQhnQp8vx4M6YCLz57Jz9b38NLGXfzlF85hxemzuP2ep/neY2/wlWvPZOWFi7jnOy9wMFPGcz0CP2D95h529AzzibNnUyyW2LbrIHv3j3P9qlPo2j3AzGkpnt7Qy46eCjIR44QFaQSKZzbsY3v/EKsuXMgffmop6zbt4lsPbUHHYxgVmEjEJqzmRsxg/52wTx2W/TdfYbbGglUhHVetiU89bqURUrlV10ZaWLqGkQ664pNMWwghKBfq9YeRmCYRd8iPu8hk5HD1kxCS0FPEEhZKG0JjYfyQprSk4gtCpUA6GBnBGJCmXhCkrThUXaTt09YcY/RgFRIpQONEbGVbll0b6f0hw9/99GGZf/MadGj222Hs2Oz+IAivj6fSRkhpQt+TBqc+lcci+IHEVxIRjyBsi1DbuJ5AJKIYLTDY9SYscByUEmgmChwdG9cVaHOon6gHf0ZjjMAg67GOIzHYVCohxCKgFY5jh7GoI2vjA9je+DW62j18SOajRNAOA6ulrv3PQRmdlffd4OJ4IimjsYiREi2E0UIYLS1Rb6ClEFpaaMsWWtRrGLWUYuJIvY98VxP1voeuk8JoKern/30/KYy2HakdW5p4PCIsYWR1fEjo6ugXdebJtbBawrePYo3iYay04JGQlkuuQCa+YccTS5xEGmFFJm59qMbuvbWsv1rdKphY9v7a2pTD5w/V7v3qBjmgMWFA4JZQbvktVGU1maeeOCzjB42HOWKslnC7NiBE48dPQUZPAJN+5030O/W774lP9Xu/y3rg+d7YVf/a2kikEe/9SZg6VaKADnea4tNb6mWRddk49lhp8VuHD0emD/M/FQJWShgVx5aYDgOPaN5nJdkkJjGJSUxiEpOYxCQmMYlJTGISk5jE/yf4P0P+uN1kGxrsAAAAAElFTkSuQmCC" width="34" height="34" alt="Toolkit Pro logo">
+        <svg width="34" height="34" viewBox="0 0 34 34" role="img" aria-label="Toolkit Pro logo"><defs><linearGradient id="brandMarkGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3573F5"/><stop offset="100%" stop-color="#1443B5"/></linearGradient></defs><rect width="34" height="34" rx="8" fill="url(#brandMarkGrad)"/><g transform="translate(17,17)"><g transform="translate(-10.75,-10.75) scale(0.896)" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.6 5.6l-6 6a2 2 0 1 0 2.8 2.8l6-6a4 4 0 0 0 5.6-5.6l-2.1 2.1-2.8-2.8Z"/></g></g></svg>
       </div>
       <span class="brand-name">Toolkit<span class="accent">Pro</span></span>
     </a>
@@ -789,6 +836,9 @@ mark.hit{background:var(--accent-soft);color:var(--text);border-radius:2px;paddi
               <a class="nav-dropdown-item" href="../index.html#cat=converters" data-i18n="cat.converters">Unit Converters</a>
               <a class="nav-dropdown-item" href="../index.html#cat=security" data-i18n="cat.security">Security</a>
               <a class="nav-dropdown-item" href="../index.html#cat=pdf" data-i18n="cat.pdf">PDF Tools</a>
+          <a class="nav-dropdown-item" href="../index.html#cat=productivity" data-i18n="cat.productivity">Productivity</a>
+          <a class="nav-dropdown-item" href="../index.html#cat=color" data-i18n="cat.color">Color &amp; CSS</a>
+          <a class="nav-dropdown-item" href="../index.html#cat=seo" data-i18n="cat.seo">SEO &amp; Marketing</a>
         </div>
       </div>
       <a class="main-nav-link" href="../about.html" data-i18n="nav.about">About</a>
@@ -837,6 +887,9 @@ mark.hit{background:var(--accent-soft);color:var(--text);border-radius:2px;paddi
               <a class="settings-link" href="../index.html#cat=converters" data-i18n="cat.converters">Unit Converters</a>
               <a class="settings-link" href="../index.html#cat=security" data-i18n="cat.security">Security</a>
               <a class="settings-link" href="../index.html#cat=pdf" data-i18n="cat.pdf">PDF Tools</a>
+            <a class="settings-link" href="../index.html#cat=productivity" data-i18n="cat.productivity">Productivity</a>
+            <a class="settings-link" href="../index.html#cat=color" data-i18n="cat.color">Color &amp; CSS</a>
+            <a class="settings-link" href="../index.html#cat=seo" data-i18n="cat.seo">SEO &amp; Marketing</a>
           </div>
 
           <h3 class="second" data-i18n="settings.pages">Pages</h3>
@@ -854,6 +907,7 @@ mark.hit{background:var(--accent-soft);color:var(--text);border-radius:2px;paddi
 </header>
 
 <main class="doc-shell">
+  <nav class="tp-breadcrumb" aria-label="Breadcrumb" style="font-size:12.5px;color:var(--text-dim);margin-bottom:10px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><a href="../index.html" style="color:inherit;text-decoration:none">Home</a><span aria-hidden="true">/</span><a href="../index.html#cat=calc" style="color:inherit;text-decoration:none">Calculators & Converters</a><span aria-hidden="true">/</span><span aria-current="page">Discount Calculator</span></nav>
   <p class="doc-eyebrow">Calculators &amp; Converters</p>
   <h1>Discount Calculator</h1>
 
@@ -922,7 +976,7 @@ mark.hit{background:var(--accent-soft);color:var(--text);border-radius:2px;paddi
     <div class="footer-grid">
       <div class="footer-col">
         <p class="footer-brand-name">Toolkit Pro</p>
-        <p class="footer-tagline" data-i18n="footer.tagline">100+ free browser-based tools for text, images, calculators and developers. No sign-ups, no uploads, no AI &mdash; everything runs locally on your device.</p>
+        <p class="footer-tagline" data-i18n="footer.tagline">218+ free browser-based tools for text, images, calculators and developers. No sign-ups, no uploads, no AI &mdash; everything runs locally on your device.</p>
       </div>
       <div class="footer-col">
         <h4 data-i18n="footer.explore">Explore</h4>
@@ -938,6 +992,9 @@ mark.hit{background:var(--accent-soft);color:var(--text);border-radius:2px;paddi
               <a class="footer-link" href="../index.html#cat=converters" data-i18n="cat.converters">Unit Converters</a>
               <a class="footer-link" href="../index.html#cat=security" data-i18n="cat.security">Security</a>
               <a class="footer-link" href="../index.html#cat=pdf" data-i18n="cat.pdf">PDF Tools</a>
+        <a class="footer-link" href="../index.html#cat=productivity" data-i18n="cat.productivity">Productivity</a>
+        <a class="footer-link" href="../index.html#cat=color" data-i18n="cat.color">Color &amp; CSS</a>
+        <a class="footer-link" href="../index.html#cat=seo" data-i18n="cat.seo">SEO &amp; Marketing</a>
       </div>
       <div class="footer-col">
         <h4 data-i18n="footer.support">Support</h4>
@@ -1127,6 +1184,9 @@ document.addEventListener('click', function(e){
     "cat.converters": "Unit Converters",
     "cat.security": "Security",
     "cat.pdf": "PDF Tools",
+    "cat.productivity": "Productivity",
+    "cat.color": "Color & CSS",
+    "cat.seo": "SEO & Marketing",
     "settings.theme": "Theme",
     "settings.light": "Light",
     "settings.dark": "Dark",
@@ -1141,7 +1201,7 @@ document.addEventListener('click', function(e){
     "footer.explore": "Explore",
     "footer.categories": "Categories",
     "footer.support": "Support",
-    "footer.tagline": "100+ free browser-based tools for text, images, calculators and developers. No sign-ups, no uploads, no AI — everything runs locally on your device.",
+    "footer.tagline": "218+ free browser-based tools for text, images, calculators and developers. No sign-ups, no uploads, no AI — everything runs locally on your device.",
     "footer.copyright": "© 2026 Toolkit Pro. All rights reserved.",
     "footer.noaccounts": "No accounts · no uploads to a server · no AI models — every tool runs locally in your browser",
     "cookie.text": "We use cookies for ads served by our ad partners and basic, non-personal analytics. Every tool on this site runs 100% in your browser — nothing you type or upload is ever sent to a server.",
@@ -1165,6 +1225,9 @@ document.addEventListener('click', function(e){
     "cat.converters": "यूनिट कनवर्टर",
     "cat.security": "सुरक्षा",
     "cat.pdf": "पीडीएफ टूल्स",
+    "cat.productivity": "प्रोडक्टिविटी",
+    "cat.color": "कलर और CSS",
+    "cat.seo": "SEO और मार्केटिंग",
     "settings.theme": "थीम",
     "settings.light": "लाइट",
     "settings.dark": "डार्क",
@@ -1179,7 +1242,7 @@ document.addEventListener('click', function(e){
     "footer.explore": "एक्सप्लोर करें",
     "footer.categories": "श्रेणियाँ",
     "footer.support": "सहायता",
-    "footer.tagline": "टेक्स्ट, इमेज, कैलकुलेटर और डेवलपर्स के लिए 100+ मुफ्त ब्राउज़र-आधारित टूल्स। कोई साइन-अप नहीं, कोई अपलोड नहीं, कोई AI नहीं — सब कुछ आपके डिवाइस पर ही चलता है।",
+    "footer.tagline": "टेक्स्ट, इमेज, कैलकुलेटर और डेवलपर्स के लिए 218+ मुफ्त ब्राउज़र-आधारित टूल्स। कोई साइन-अप नहीं, कोई अपलोड नहीं, कोई AI नहीं — सब कुछ आपके डिवाइस पर ही चलता है।",
     "footer.copyright": "© 2026 Toolkit Pro. सर्वाधिकार सुरक्षित।",
     "footer.noaccounts": "कोई अकाउंट नहीं · सर्वर पर कोई अपलोड नहीं · कोई AI मॉडल नहीं — हर टूल आपके ब्राउज़र में ही चलता है",
     "cookie.text": "हम अपने विज्ञापन पार्टनर्स के विज्ञापनों और बुनियादी, गैर-व्यक्तिगत एनालिटिक्स के लिए कुकीज़ का उपयोग करते हैं। इस साइट का हर टूल 100% आपके ब्राउज़र में चलता है — आपके द्वारा टाइप या अपलोड किया गया कुछ भी कभी सर्वर पर नहीं भेजा जाता।",

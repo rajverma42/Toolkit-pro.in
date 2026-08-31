@@ -4,7 +4,7 @@
    locally in your browser" promise. No analytics, no external caching,
    nothing beyond same-origin static files. */
 
-const CACHE_VERSION = 'tp-v6';
+const CACHE_VERSION = 'tp-v12';
 /* Relative (no leading slash) so these resolve correctly whether the site
    is hosted at a domain root or under a GitHub Pages project subpath --
    relative URLs in a service worker resolve against the SW script's own
