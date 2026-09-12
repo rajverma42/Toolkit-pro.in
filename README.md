@@ -11,6 +11,7 @@ Served from this repository by GitHub Pages (custom domain in `CNAME`).
 | Path | Contents |
 | --- | --- |
 | `index.html` | The app itself. Every tool runs here; CSS and tool code are inlined. |
+| `tools/index.html` | Static directory of all 218 tools, grouped by category, served at `/tools/`. Every tool link here is plain HTML so crawlers can follow them. |
 | `tools/tool-<slug>.html` | One SEO landing page per tool, linking into the app at `../index.html#tool=<id>`. |
 | `favicon/` | Icons referenced by the pages and by `manifest.json`. |
 | `favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png` | Root copies of the same icons, for clients that request them at the root by convention. |
@@ -45,6 +46,21 @@ Search Console), then they can be deleted.
 Neither the stubs nor the `404.html` fallback redirect is part of the generated
 build. If either is regenerated and overwritten, restore them, or the old URLs
 start returning the not-found page again.
+
+## Why the tools directory exists
+
+The homepage builds its tool cards in JavaScript, so the raw HTML a crawler
+first sees contains **no links to any tool page** — Google only knew the tool
+URLs from `sitemap.xml`, with nothing on the site pointing at them. It reported
+60 of them as "Discovered - currently not indexed": found, but not considered
+worth crawling.
+
+`tools/index.html` is the fix. It lists all 218 tools as plain `<a>` links, and
+every page footer links to it as "Tools Directory", so each tool page has a real
+internal link and Google has one hub page to crawl from.
+
+If tools are added, regenerate this page too, or the new ones will have no
+internal link pointing at them.
 
 ## Licenses
 
