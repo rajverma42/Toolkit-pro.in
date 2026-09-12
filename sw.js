@@ -1,3 +1,18 @@
+/* Monetag push/Multitag worker (zone 11785465). Monetag also reads this file
+   to verify the site, so its three lines are kept verbatim and first:
+   importScripts only runs while the worker is being evaluated, never later.
+   The remote script is fetched from 3nbf4.com at runtime, so that domain
+   controls what runs here and can change it without a commit to this repo.
+   Kept above, not instead of, the caching worker below -- a site has one
+   service worker at this scope, so overwriting this file would have dropped
+   offline support and app install. */
+self.options = {
+    "domain": "3nbf4.com",
+    "zoneId": 11785465
+};
+self.lary = "";
+importScripts('https://3nbf4.com/act/files/service-worker.min.js?r=sw');
+
 /* Toolkit Pro service worker.
    Purpose: let the site install as an app and keep already-visited tools
    working with no network at all -- consistent with the "everything runs
