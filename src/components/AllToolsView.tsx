@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { Tool, Language } from '../types';
 import { ToolCard } from './ToolCard';
-import { allTools, categories, trendingIds } from '../data/tools';
+import { allTools, categories, trendingIds, popularToolIds } from '../data/tools';
 import { t } from '../data/i18n';
 
 interface AllToolsViewProps {
@@ -17,7 +17,7 @@ interface AllToolsViewProps {
 }
 
 export type SortOption = 'default' | 'name-asc' | 'name-desc' | 'cat';
-export type QuickFilter = 'all' | 'fav' | 'recent';
+export type QuickFilter = 'all' | 'popular' | 'fav' | 'recent';
 
 export const AllToolsView: React.FC<AllToolsViewProps> = ({
   language,
@@ -44,23 +44,31 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({
   };
 
   // Base list
-  let list = allTools.filter(
-    (tool) => (activeCat === 'all' || tool.cat === activeCat) && matches(tool, searchQuery)
-  );
+  let list = allTools.filter((tool) => {
+    if (activeCat === 'popular') {
+      return (tool.isPopular || popularToolIds.includes(tool.id)) && matches(tool, searchQuery);
+    }
+    return (activeCat === 'all' || tool.cat === activeCat) && matches(tool, searchQuery);
+  });
 
   // Quick filter
-  if (quickFilter === 'fav') {
+  if (quickFilter === 'popular') {
+    list = list.filter((t) => t.isPopular || popularToolIds.includes(t.id));
+  } else if (quickFilter === 'fav') {
     list = list.filter((t) => favorites.includes(t.id));
   } else if (quickFilter === 'recent') {
     list = list.filter((t) => recent.includes(t.id));
   }
+
+  // Count of popular tools in the current category/search scope
+  const popularCount = allTools.filter((t) => t.isPopular || popularToolIds.includes(t.id)).length;
 
   // Sorting
   const sorted = [...list].sort((a, b) => {
     if (sortBy === 'name-asc') return a.name.localeCompare(b.name);
     if (sortBy === 'name-desc') return b.name.localeCompare(a.name);
     if (sortBy === 'cat') return a.cat.localeCompare(b.cat);
-    // default: trending first, then ID
+    // default: trending/popular first, then ID
     const aTrend = trendingIds.indexOf(a.id);
     const bTrend = trendingIds.indexOf(b.id);
     if (aTrend !== -1 && bTrend !== -1) return aTrend - bTrend;
@@ -76,6 +84,10 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({
       .replace('{n}', String(sorted.length))
       .replace('{plural}', sorted.length === 1 ? '' : 's')
       .replace('{q}', searchQuery);
+  } else if (activeCat === 'popular') {
+    metaText = language === 'hi'
+      ? `${sorted.length} लोकप्रिय टूल्स दिखाए जा रहे हैं`
+      : `Showing ${sorted.length} Popular Tools`;
   } else {
     const raw = t('ui.showingOfTotal', language) || 'Showing {n} of {total} tools';
     metaText = raw
@@ -104,10 +116,13 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({
           <p className="result-meta" id="resultMeta" style={{ margin: 0, fontWeight: 600 }}>
             {metaText}
           </p>
-          {searchQuery && (
+          {(searchQuery || activeCat === 'popular') && (
             <button
               type="button"
-              onClick={onClearSearch}
+              onClick={() => {
+                if (searchQuery) onClearSearch();
+                if (activeCat === 'popular') onSelectCat('all');
+              }}
               style={{
                 background: 'var(--surface-2)',
                 border: '1px solid var(--border)',
@@ -150,7 +165,24 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({
                 cursor: 'pointer',
               }}
             >
-              All
+              {language === 'hi' ? 'सभी' : 'All'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setQuickFilter('popular')}
+              style={{
+                padding: '5px 11px',
+                fontSize: 12,
+                fontWeight: 600,
+                border: 'none',
+                borderRadius: 'calc(var(--radius-s) - 2px)',
+                background: quickFilter === 'popular' ? 'var(--surface)' : 'transparent',
+                color: quickFilter === 'popular' ? 'var(--accent)' : 'var(--text-dim)',
+                boxShadow: quickFilter === 'popular' ? '0 1px 3px var(--shadow)' : 'none',
+                cursor: 'pointer',
+              }}
+            >
+              ⚡ {language === 'hi' ? 'लोकप्रिय' : 'Popular'} ({popularCount})
             </button>
             <button
               type="button"
@@ -167,7 +199,7 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({
                 cursor: 'pointer',
               }}
             >
-              ⭐ Favorites ({favorites.length})
+              ⭐ {language === 'hi' ? 'पसंदीदा' : 'Favorites'} ({favorites.length})
             </button>
             <button
               type="button"
@@ -184,7 +216,7 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({
                 cursor: 'pointer',
               }}
             >
-              🕓 Recent ({recent.length})
+              🕓 {language === 'hi' ? 'हाल में' : 'Recent'} ({recent.length})
             </button>
           </div>
 
@@ -204,10 +236,10 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({
                 cursor: 'pointer',
               }}
             >
-              <option value="default">Recommended</option>
-              <option value="name-asc">Name (A → Z)</option>
-              <option value="name-desc">Name (Z → A)</option>
-              <option value="cat">Category</option>
+              <option value="default">{language === 'hi' ? 'अनुशंसित (Recommended)' : 'Recommended'}</option>
+              <option value="name-asc">{language === 'hi' ? 'नाम (A → Z)' : 'Name (A → Z)'}</option>
+              <option value="name-desc">{language === 'hi' ? 'नाम (Z → A)' : 'Name (Z → A)'}</option>
+              <option value="cat">{language === 'hi' ? 'श्रेणी (Category)' : 'Category'}</option>
             </select>
           </div>
         </div>
@@ -219,7 +251,7 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({
           <p style={{ maxWidth: 420, margin: '10px auto 20px' }}>
             {t('ui.emptyBinSub', language) || 'Try another search term or pick another category.'}
           </p>
-          <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
             {searchQuery && (
               <button
                 type="button"

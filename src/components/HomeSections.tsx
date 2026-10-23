@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { Tool, Language } from '../types';
 import { ToolCard } from './ToolCard';
-import { trendingIds, allTools } from '../data/tools';
+import { popularToolIds, allTools } from '../data/tools';
 import { t } from '../data/i18n';
 
 interface HomeSectionsProps {
@@ -21,9 +21,30 @@ export const HomeSections: React.FC<HomeSectionsProps> = ({
   onSelectTool,
   onBrowseAll,
 }) => {
-  const trendingTools = trendingIds
+  const [popularCat, setPopularCat] = useState<string>('all');
+  const [showAllPopular, setShowAllPopular] = useState<boolean>(false);
+
+  // All popular tools in priority order
+  const allPopularTools = popularToolIds
     .map((id) => allTools.find((t) => t.id === id))
     .filter((t): t is Tool => Boolean(t));
+
+  // Filtered popular tools by selected sub-category
+  const filteredPopularTools = allPopularTools.filter((t) => {
+    if (popularCat === 'all') return true;
+    if (popularCat === 'pdf') return t.cat === 'pdf';
+    if (popularCat === 'image') return t.cat === 'image';
+    if (popularCat === 'text') return t.cat === 'text';
+    if (popularCat === 'calc') return t.cat === 'calc' || t.cat === 'converters';
+    if (popularCat === 'dev') return t.cat === 'dev' || t.cat === 'security';
+    if (popularCat === 'productivity') return t.cat === 'productivity' || t.cat === 'color' || t.cat === 'seo';
+    return t.cat === popularCat;
+  });
+
+  // Limit display unless expanded
+  const displayedPopular = showAllPopular
+    ? filteredPopularTools
+    : filteredPopularTools.slice(0, 12);
 
   const favoriteTools = favorites
     .map((id) => allTools.find((t) => t.id === id))
@@ -38,14 +59,49 @@ export const HomeSections: React.FC<HomeSectionsProps> = ({
       ? `सभी ${allTools.length} टूल्स देखें →`
       : `Browse All ${allTools.length} Tools →`;
 
+  const popularFilters = [
+    { id: 'all', label: language === 'hi' ? 'सभी लोकप्रिय' : 'All Popular', icon: '⚡' },
+    { id: 'pdf', label: 'PDF', icon: '📄' },
+    { id: 'image', label: language === 'hi' ? 'इमेज' : 'Image', icon: '🖼️' },
+    { id: 'text', label: language === 'hi' ? 'टेक्स्ट' : 'Text', icon: '✍️' },
+    { id: 'calc', label: language === 'hi' ? 'कैलकुलेटर' : 'Calculators', icon: '🧮' },
+    { id: 'dev', label: 'Dev Tools', icon: '💻' },
+    { id: 'productivity', label: language === 'hi' ? 'प्रोडक्टिविटी' : 'Productivity', icon: '⏱️' },
+  ];
+
   return (
     <div id="homeView">
-      {/* Popular Tools */}
-      <div className="home-section">
-        <div className="section-head">
-          <h2>
-            <span>{t('home.popularTools', language) || '⚡ Popular Tools'}</span>
-          </h2>
+      {/* Popular Tools Section */}
+      <div className="home-section" id="popularSection">
+        <div className="section-head" style={{ alignItems: 'flex-start' }}>
+          <div>
+            <h2 style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span>{t('home.popularTools', language) || '⚡ Popular Tools'}</span>
+              <span
+                style={{
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  padding: '2px 8px',
+                  borderRadius: '999px',
+                  background: 'color-mix(in srgb, var(--accent) 15%, transparent)',
+                  color: 'var(--accent)',
+                }}
+              >
+                {allPopularTools.length}
+              </span>
+            </h2>
+            <p
+              style={{
+                margin: '4px 0 0',
+                fontSize: '13px',
+                color: 'var(--text-dim)',
+                maxWidth: '640px',
+              }}
+            >
+              {t('home.popularToolsSub', language) ||
+                'Top-rated utilities used daily by thousands for PDF, images, calculations, and dev tasks.'}
+            </p>
+          </div>
           <button
             type="button"
             className="section-head-link"
@@ -57,8 +113,59 @@ export const HomeSections: React.FC<HomeSectionsProps> = ({
             </svg>
           </button>
         </div>
+
+        {/* Popular Category Sub-Filter Pills */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            overflowX: 'auto',
+            paddingBottom: 10,
+            marginBottom: 16,
+            scrollbarWidth: 'none',
+          }}
+        >
+          {popularFilters.map((flt) => {
+            const isActive = popularCat === flt.id;
+            return (
+              <button
+                key={flt.id}
+                type="button"
+                onClick={() => {
+                  setPopularCat(flt.id);
+                  setShowAllPopular(false);
+                }}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '6px 14px',
+                  borderRadius: '999px',
+                  fontSize: '12.5px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  border: isActive
+                    ? '1px solid var(--accent)'
+                    : '1px solid var(--border)',
+                  background: isActive ? 'var(--accent)' : 'var(--surface)',
+                  color: isActive ? 'var(--accent-text, #fff)' : 'var(--text-dim)',
+                  boxShadow: isActive ? '0 2px 8px color-mix(in srgb, var(--accent) 35%, transparent)' : 'none',
+                  transition: 'all 0.15s ease',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                }}
+              >
+                <span>{flt.icon}</span>
+                <span>{flt.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Popular Tools Grid */}
         <div className="tool-grid">
-          {trendingTools.map((tool) => (
+          {displayedPopular.map((tool) => (
             <ToolCard
               key={tool.id}
               tool={tool}
@@ -69,6 +176,46 @@ export const HomeSections: React.FC<HomeSectionsProps> = ({
             />
           ))}
         </div>
+
+        {/* Show More / Show Less Popular Tools */}
+        {filteredPopularTools.length > 12 && (
+          <div style={{ textAlign: 'center', marginTop: 18 }}>
+            <button
+              type="button"
+              onClick={() => setShowAllPopular(!showAllPopular)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '8px 20px',
+                borderRadius: 'var(--radius-s)',
+                background: 'var(--surface-2)',
+                border: '1px solid var(--border)',
+                color: 'var(--text)',
+                fontSize: '13px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              {showAllPopular ? (
+                <>
+                  <span>Show Less</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="m18 15-6-6-6 6" />
+                  </svg>
+                </>
+              ) : (
+                <>
+                  <span>{language === 'hi' ? `और लोकप्रिय टूल्स देखें (+${filteredPopularTools.length - 12})` : `Show More Popular Tools (+${filteredPopularTools.length - 12})`}</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </>
+              )}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Favourite Tools */}

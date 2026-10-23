@@ -58,6 +58,7 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   const counts: Record<string, number> = { all: allTools.length };
+  counts.popular = allTools.filter((t) => t.isPopular).length;
   Object.keys(categories).forEach((k) => {
     counts[k] = allTools.filter((t) => t.cat === k).length;
   });
@@ -99,10 +100,27 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
             <button
               type="button"
-              className={`main-nav-link ${currentView === 'all' ? 'active' : ''}`}
-              onClick={() => onNavigate('all')}
+              className={`main-nav-link ${currentView === 'all' && activeCat !== 'popular' ? 'active' : ''}`}
+              onClick={() => {
+                onSelectCat('all');
+                onNavigate('all');
+              }}
             >
               {t('nav.allTools', language)}
+            </button>
+            <button
+              type="button"
+              className={`main-nav-link ${currentView === 'all' && activeCat === 'popular' ? 'active' : ''}`}
+              onClick={() => {
+                onSelectCat('popular');
+                onNavigate('all');
+              }}
+              style={{
+                color: currentView === 'all' && activeCat === 'popular' ? 'var(--accent)' : undefined,
+                fontWeight: 700,
+              }}
+            >
+              {t('nav.popular', language) || '⚡ Popular'}
             </button>
 
             {/* Categories dropdown */}
@@ -413,14 +431,27 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
             <button
               type="button"
-              className={`main-nav-link ${currentView === 'all' ? 'active' : ''}`}
+              className={`main-nav-link ${currentView === 'all' && activeCat !== 'popular' ? 'active' : ''}`}
               onClick={() => {
+                onSelectCat('all');
                 onNavigate('all');
                 setMobileMenuOpen(false);
               }}
               style={{ justifyContent: 'flex-start' }}
             >
               {t('nav.allTools', language)}
+            </button>
+            <button
+              type="button"
+              className={`main-nav-link ${currentView === 'all' && activeCat === 'popular' ? 'active' : ''}`}
+              onClick={() => {
+                onSelectCat('popular');
+                onNavigate('all');
+                setMobileMenuOpen(false);
+              }}
+              style={{ justifyContent: 'flex-start', color: 'var(--accent)', fontWeight: 700 }}
+            >
+              {t('nav.popular', language) || '⚡ Popular'}
             </button>
             <button
               type="button"
@@ -494,6 +525,15 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="dot" style={{ background: 'var(--accent)' }}></span>
                 {t('ui.allToolsChip', language) || 'All Tools'}
                 <span className="count">{counts.all}</span>
+              </button>
+              <button
+                type="button"
+                className={`chip ${activeCat === 'popular' ? 'active' : ''}`}
+                onClick={() => onSelectCat('popular')}
+              >
+                <span className="dot" style={{ background: '#F59E0B' }}></span>
+                {t('ui.popularToolsChip', language) || '⚡ Popular Tools'}
+                <span className="count">{counts.popular}</span>
               </button>
               {Object.entries(categories).map(([k, cat]) => (
                 <button

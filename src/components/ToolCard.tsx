@@ -57,16 +57,37 @@ export const ToolCard: React.FC<ToolCardProps> = ({
         </svg>
       </button>
 
-      <div className="tool-icon">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.7"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          dangerouslySetInnerHTML={{ __html: iconPath }}
-        />
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingRight: 28 }}>
+        <div className="tool-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            dangerouslySetInnerHTML={{ __html: iconPath }}
+          />
+        </div>
+        {tool.isPopular && (
+          <span
+            style={{
+              fontSize: '10.5px',
+              fontWeight: 700,
+              padding: '2px 7px',
+              borderRadius: '999px',
+              background: 'color-mix(in srgb, var(--accent) 15%, transparent)',
+              color: 'var(--accent)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 3,
+              letterSpacing: '0.02em',
+              border: '1px solid color-mix(in srgb, var(--accent) 25%, transparent)',
+            }}
+          >
+            ⚡ {t('ui.popularBadge', language) || 'Popular'}
+          </span>
+        )}
       </div>
 
       <div className="tool-name">{name}</div>

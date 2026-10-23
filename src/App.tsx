@@ -213,7 +213,7 @@ export const App: React.FC = () => {
             return;
           }
         }
-        if (qCat && categories[qCat]) {
+        if (qCat && (categories[qCat] || qCat === 'popular')) {
           setActiveCat(qCat);
           setView('all');
           return;
@@ -238,8 +238,12 @@ export const App: React.FC = () => {
           setView('tool');
           return;
         }
-      } else if (catMatch && categories[catMatch[1]]) {
+      } else if (catMatch && (categories[catMatch[1]] || catMatch[1] === 'popular')) {
         setActiveCat(catMatch[1]);
+        setView('all');
+        return;
+      } else if (hash === '#popular' || hash === '#popular-tools') {
+        setActiveCat('popular');
         setView('all');
         return;
       } else if (searchMatch) {
@@ -251,6 +255,7 @@ export const App: React.FC = () => {
         setView('all');
         return;
       } else if (hash === '#all-tools') {
+        setActiveCat('all');
         setView('all');
         return;
       } else if (

@@ -4,6 +4,7 @@ export interface Tool {
   name: string;
   desc: string;
   keywords?: string;
+  isPopular?: boolean;
   mount: (container: HTMLElement) => void;
 }
 

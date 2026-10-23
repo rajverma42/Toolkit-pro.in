@@ -19,13 +19,18 @@ export const Hero: React.FC<HeroProps> = ({ language, onSearch, onSelectTool }) 
   };
 
   const quickPicks = [
-    { id: 'p01', label: 'PDF Merger' },
-    { id: 'i01', label: 'Image Resizer' },
-    { id: 't01', label: 'Word Counter' },
+    { id: 'p01', label: language === 'hi' ? 'पीडीएफ मर्जर' : 'PDF Merger' },
+    { id: 'p03', label: language === 'hi' ? 'पीडीएफ कंप्रेसर' : 'PDF Compressor' },
+    { id: 'i01', label: language === 'hi' ? 'इमेज रीसाइज़र' : 'Image Resizer' },
+    { id: 'i02', label: language === 'hi' ? 'इमेज कंप्रेसर' : 'Image Compressor' },
+    { id: 'c04', label: language === 'hi' ? 'उम्र कैलकुलेटर' : 'Age Calculator' },
+    { id: 't01', label: language === 'hi' ? 'वर्ड काउंटर' : 'Word Counter' },
     { id: 'd01', label: 'JSON Formatter' },
     { id: 'd03', label: 'Base64' },
-    { id: 'c07', label: 'EMI Calculator' },
-    { id: 'd08', label: 'Password Generator' },
+    { id: 'c07', label: language === 'hi' ? 'ईएमआई कैलकुलेटर' : 'EMI Calculator' },
+    { id: 'd08', label: language === 'hi' ? 'पासवर्ड जनरेटर' : 'Password Generator' },
+    { id: 't28', label: language === 'hi' ? 'टेक्स्ट टू स्पीच' : 'Text to Speech' },
+    { id: 'pr07', label: language === 'hi' ? 'टाइपिंग टेस्ट' : 'Typing Test' },
   ];
 
   return (

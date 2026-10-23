@@ -58,7 +58,9 @@ export const I18N: Record<string, Record<string, string>> = {
     "stats.item3Sub": "Your data is 100% safe",
     "stats.item4Title": "Always Accessible",
     "stats.item4Sub": "Use anytime, anywhere",
+    "nav.popular": "⚡ Popular",
     "home.popularTools": "⚡ Popular Tools",
+    "home.popularToolsSub": "Top-rated utilities used daily by thousands for PDF, images, calculations, and dev tasks.",
     "home.viewAllTools": "View All Tools",
     "home.favoriteTools": "⭐ Favourite Tools",
     "home.recentlyUsed": "🕓 Recently Used",
@@ -94,7 +96,11 @@ export const I18N: Record<string, Record<string, string>> = {
     "ui.addToFav": "Add to favourites",
     "ui.removeFromFav": "Remove from favourites",
     "ui.resultsForQuery": "{n} result{plural} for “{q}”",
-    "ui.showingOfTotal": "Showing {n} of {total} tools"
+    "ui.showingOfTotal": "Showing {n} of {total} tools",
+    "ui.popular": "Popular",
+    "ui.allPopular": "All Popular",
+    "ui.popularBadge": "Popular",
+    "ui.popularFilter": "⚡ Popular"
   },
   "hi": {
     "nav.home": "होम",
@@ -154,7 +160,9 @@ export const I18N: Record<string, Record<string, string>> = {
     "stats.item3Sub": "आपका डेटा 100% सुरक्षित है",
     "stats.item4Title": "हमेशा उपलब्ध",
     "stats.item4Sub": "कभी भी, कहीं भी उपयोग करें",
+    "nav.popular": "⚡ लोकप्रिय",
     "home.popularTools": "⚡ लोकप्रिय टूल्स",
+    "home.popularToolsSub": "हज़ारों लोगों द्वारा रोज़ाना इस्तेमाल किए जाने वाले पीडीएफ, इमेज, कैलकुलेटर और डेव टूल्स।",
     "home.viewAllTools": "सभी टूल्स देखें",
     "home.favoriteTools": "⭐ पसंदीदा टूल्स",
     "home.recentlyUsed": "🕓 हाल में उपयोग किए गए",
@@ -190,7 +198,11 @@ export const I18N: Record<string, Record<string, string>> = {
     "ui.addToFav": "पसंदीदा में जोड़ें",
     "ui.removeFromFav": "पसंदीदा से हटाएं",
     "ui.resultsForQuery": "“{q}” के लिए {n} परिणाम",
-    "ui.showingOfTotal": "{total} में से {n} टूल दिखाए जा रहे हैं"
+    "ui.showingOfTotal": "{total} में से {n} टूल दिखाए जा रहे हैं",
+    "ui.popular": "लोकप्रिय",
+    "ui.allPopular": "सभी लोकप्रिय",
+    "ui.popularBadge": "लोकप्रिय",
+    "ui.popularFilter": "⚡ लोकप्रिय"
   }
 };
 
