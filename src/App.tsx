@@ -13,8 +13,11 @@ import { CommandPalette } from './components/CommandPalette';
 import { ToastContainer, ToastMessage } from './components/Toast';
 import { allTools, categories, getToolById, getToolBySlugOrId, runToolCleanup } from './data/tools';
 import { useSeoMetadata } from './hooks/useSeoMetadata';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { ToolNotFoundView } from './components/ToolNotFoundView';
 
 const FAV_KEY = 'tp-favorites';
+const PIN_KEY = 'tp-pinned';
 const RECENT_KEY = 'tp-recent';
 const RECENT_MAX = 12;
 
@@ -44,6 +47,17 @@ export const App: React.FC = () => {
   const [favorites, setFavorites] = useState<string[]>(() => {
     try {
       const raw = localStorage.getItem(FAV_KEY);
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr.filter((id) => allTools.some((t) => t.id === id)) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Manually Pinned Tools (hoisted to the top of Home and All Tools)
+  const [pinned, setPinned] = useState<string[]>(() => {
+    try {
+      const raw = localStorage.getItem(PIN_KEY);
       const arr = raw ? JSON.parse(raw) : [];
       return Array.isArray(arr) ? arr.filter((id) => allTools.some((t) => t.id === id)) : [];
     } catch {
@@ -148,6 +162,29 @@ export const App: React.FC = () => {
         showToast(
           isFav ? 'Removed from favorites' : 'Added to favorites ⭐',
           isFav ? 'info' : 'success'
+        );
+        return next;
+      });
+    },
+    [showToast]
+  );
+
+  // Toggle Pin (manually pin tool to top of Home and All Tools)
+  const togglePin = useCallback(
+    (id: string, e?: React.MouseEvent) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      setPinned((prev) => {
+        const isPinned = prev.includes(id);
+        const next = isPinned ? prev.filter((x) => x !== id) : [id, ...prev];
+        try {
+          localStorage.setItem(PIN_KEY, JSON.stringify(next));
+        } catch {}
+        showToast(
+          isPinned ? 'Unpinned tool from top' : 'Pinned tool to top 📌',
+          isPinned ? 'info' : 'success'
         );
         return next;
       });
@@ -390,8 +427,10 @@ export const App: React.FC = () => {
             <HomeSections
               language={language}
               favorites={favorites}
+              pinned={pinned}
               recent={recent}
               onToggleFav={toggleFavorite}
+              onTogglePin={togglePin}
               onSelectTool={handleSelectTool}
               onBrowseAll={() => handleNavigate('all')}
             />
@@ -404,28 +443,48 @@ export const App: React.FC = () => {
             activeCat={activeCat}
             searchQuery={searchQuery}
             favorites={favorites}
+            pinned={pinned}
             recent={recent}
             onToggleFav={toggleFavorite}
+            onTogglePin={togglePin}
             onSelectTool={handleSelectTool}
             onSelectCat={setActiveCat}
             onClearSearch={() => setSearchQuery('')}
           />
         )}
 
-        {view === 'tool' && currentTool && (
-          <ToolView
-            tool={currentTool}
-            language={language}
-            isFav={favorites.includes(currentTool.id)}
-            onToggleFav={() => toggleFavorite(currentTool.id)}
-            onBack={handleBackFromTool}
-            onSelectTool={handleSelectTool}
-            onSelectCat={(cat) => {
-              setActiveCat(cat);
-              handleNavigate('all');
+        {view === 'tool' && (
+          <ErrorBoundary
+            fallbackTitle="Tool Error"
+            onReset={() => {
+              if (currentTool) handleSelectTool(currentTool.id);
             }}
-            onShowToast={showToast}
-          />
+          >
+            {currentTool ? (
+              <ToolView
+                tool={currentTool}
+                language={language}
+                isFav={favorites.includes(currentTool.id)}
+                isPinned={pinned.includes(currentTool.id)}
+                onToggleFav={() => toggleFavorite(currentTool.id)}
+                onTogglePin={() => togglePin(currentTool.id)}
+                onBack={handleBackFromTool}
+                onSelectTool={handleSelectTool}
+                onSelectCat={(cat) => {
+                  setActiveCat(cat);
+                  handleNavigate('all');
+                }}
+                onShowToast={showToast}
+              />
+            ) : (
+              <ToolNotFoundView
+                language={language}
+                onSelectTool={handleSelectTool}
+                onBrowseAll={() => handleNavigate('all')}
+                onGoHome={() => handleNavigate('home')}
+              />
+            )}
+          </ErrorBoundary>
         )}
 
         {(view === 'about' ||
@@ -461,6 +520,7 @@ export const App: React.FC = () => {
         onSelectTool={handleSelectTool}
         language={language}
         favorites={favorites}
+        pinned={pinned}
         recent={recent}
       />
 

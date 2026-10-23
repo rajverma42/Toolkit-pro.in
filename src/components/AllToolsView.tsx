@@ -9,23 +9,27 @@ interface AllToolsViewProps {
   activeCat: string;
   searchQuery: string;
   favorites: string[];
+  pinned: string[];
   recent: string[];
   onToggleFav: (id: string, e: React.MouseEvent) => void;
+  onTogglePin: (id: string, e: React.MouseEvent) => void;
   onSelectTool: (id: string) => void;
   onSelectCat: (cat: string) => void;
   onClearSearch: () => void;
 }
 
 export type SortOption = 'default' | 'name-asc' | 'name-desc' | 'cat';
-export type QuickFilter = 'all' | 'popular' | 'fav' | 'recent';
+export type QuickFilter = 'all' | 'pinned' | 'popular' | 'fav' | 'recent';
 
 export const AllToolsView: React.FC<AllToolsViewProps> = ({
   language,
   activeCat,
   searchQuery,
   favorites,
+  pinned,
   recent,
   onToggleFav,
+  onTogglePin,
   onSelectTool,
   onSelectCat,
   onClearSearch,
@@ -52,7 +56,9 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({
   });
 
   // Quick filter
-  if (quickFilter === 'popular') {
+  if (quickFilter === 'pinned') {
+    list = list.filter((t) => pinned.includes(t.id));
+  } else if (quickFilter === 'popular') {
     list = list.filter((t) => t.isPopular || popularToolIds.includes(t.id));
   } else if (quickFilter === 'fav') {
     list = list.filter((t) => favorites.includes(t.id));
@@ -63,9 +69,15 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({
   // Count of popular tools in the current category/search scope
   const popularCount = allTools.filter((t) => t.isPopular || popularToolIds.includes(t.id)).length;
 
-  // Sorting
+  // Sorting: Pinned tools override default, popular, recent and category order to always stay at the top!
   const sorted = [...list].sort((a, b) => {
-    if (sortBy === 'name-asc') return a.name.localeCompare(b.name);
+    const aPin = pinned.includes(a.id);
+    const bPin = pinned.includes(b.id);
+    if (aPin && !bPin) return -1;
+    if (!aPin && bPin) return 1;
+    if (aPin && bPin) return pinned.indexOf(a.id) - pinned.indexOf(b.id);
+
+    if (sortBy === 'name-asc') return a.name.localeCompare(a.name);
     if (sortBy === 'name-desc') return b.name.localeCompare(a.name);
     if (sortBy === 'cat') return a.cat.localeCompare(b.cat);
     // default: trending/popular first, then ID
@@ -84,6 +96,10 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({
       .replace('{n}', String(sorted.length))
       .replace('{plural}', sorted.length === 1 ? '' : 's')
       .replace('{q}', searchQuery);
+  } else if (quickFilter === 'pinned') {
+    metaText = language === 'hi'
+      ? `${sorted.length} पिन किए गए टूल्स दिखाए जा रहे हैं`
+      : `Showing ${sorted.length} Pinned Tools`;
   } else if (activeCat === 'popular') {
     metaText = language === 'hi'
       ? `${sorted.length} लोकप्रिय टूल्स दिखाए जा रहे हैं`
@@ -166,6 +182,23 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({
               }}
             >
               {language === 'hi' ? 'सभी' : 'All'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setQuickFilter('pinned')}
+              style={{
+                padding: '5px 11px',
+                fontSize: 12,
+                fontWeight: 600,
+                border: 'none',
+                borderRadius: 'calc(var(--radius-s) - 2px)',
+                background: quickFilter === 'pinned' ? 'var(--surface)' : 'transparent',
+                color: quickFilter === 'pinned' ? 'var(--accent)' : 'var(--text-dim)',
+                boxShadow: quickFilter === 'pinned' ? '0 1px 3px var(--shadow)' : 'none',
+                cursor: 'pointer',
+              }}
+            >
+              📌 {language === 'hi' ? 'पिन' : 'Pinned'} ({pinned.length})
             </button>
             <button
               type="button"
@@ -288,8 +321,10 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({
               key={tool.id}
               tool={tool}
               isFav={favorites.includes(tool.id)}
+              isPinned={pinned.includes(tool.id)}
               language={language}
               onToggleFav={onToggleFav}
+              onTogglePin={onTogglePin}
               onSelect={onSelectTool}
             />
           ))}

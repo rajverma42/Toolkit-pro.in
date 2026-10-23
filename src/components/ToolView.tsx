@@ -8,7 +8,9 @@ interface ToolViewProps {
   tool: Tool;
   language: Language;
   isFav: boolean;
+  isPinned?: boolean;
   onToggleFav: () => void;
+  onTogglePin?: () => void;
   onBack: () => void;
   onSelectTool: (id: string) => void;
   onSelectCat: (cat: string) => void;
@@ -22,7 +24,9 @@ export const ToolView: React.FC<ToolViewProps> = ({
   tool,
   language,
   isFav,
+  isPinned = false,
   onToggleFav,
+  onTogglePin,
   onBack,
   onSelectTool,
   onSelectCat,
@@ -59,11 +63,35 @@ export const ToolView: React.FC<ToolViewProps> = ({
   }, [tool]);
 
   const handleCopyLink = async () => {
+    const url = `${window.location.origin}${window.location.pathname}#tool=${tool.id}`;
+    let success = false;
     try {
-      const url = `${window.location.origin}${window.location.pathname}#tool=${tool.id}`;
-      await navigator.clipboard.writeText(url);
-      onShowToast('Direct tool link copied to clipboard!', 'success');
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(url);
+        success = true;
+      }
     } catch (e) {
+      success = false;
+    }
+    if (!success) {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = url;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        ta.style.top = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        success = document.execCommand('copy');
+        ta.remove();
+      } catch (err) {
+        success = false;
+      }
+    }
+    if (success) {
+      onShowToast('Direct tool link copied to clipboard!', 'success');
+    } else {
       onShowToast('Could not copy link.', 'error');
     }
   };
@@ -94,51 +122,34 @@ export const ToolView: React.FC<ToolViewProps> = ({
       }}
     >
       {/* Top Navigation Bar: Breadcrumbs & Actions */}
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 12,
-          marginBottom: 16,
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '13px' }}>
-          <button type="button" className="tool-back-btn" id="toolBackBtn" onClick={onBack} style={{ margin: 0 }}>
+      <div className="tool-view-top-bar">
+        <nav className="tool-breadcrumbs" aria-label="Breadcrumb">
+          <button type="button" className="tool-back-btn" id="toolBackBtn" onClick={onBack}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="m15 18-6-6 6-6" />
             </svg>
-            <span>{t('ui.backToAllTools', language) || 'Back to All Tools'}</span>
+            <span>{t('ui.backToAllTools', language) || 'Back'}</span>
           </button>
-          <span style={{ color: 'var(--text-dim)' }}>/</span>
+          <span className="crumb-sep">/</span>
           <button
             type="button"
+            className="crumb-cat"
             onClick={() => onSelectCat(tool.cat)}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: 'var(--text-dim)',
-              cursor: 'pointer',
-              fontWeight: 500,
-              padding: 0,
-            }}
           >
             {catLabel}
           </button>
-          <span style={{ color: 'var(--text-dim)' }}>/</span>
-          <span style={{ fontWeight: 600, color: 'var(--text)' }}>{name}</span>
-        </div>
+          <span className="crumb-sep">/</span>
+          <span className="crumb-current">{name}</span>
+        </nav>
 
         {/* Workspace Toolbar Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div className="tool-actions-toolbar">
           {/* Reset Workspace */}
           <button
             type="button"
             className="btn ghost small"
             onClick={handleReset}
             title="Reset workspace"
-            style={{ borderRadius: 'var(--radius-s)' }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
@@ -153,7 +164,6 @@ export const ToolView: React.FC<ToolViewProps> = ({
             className="btn ghost small"
             onClick={handleCopyLink}
             title="Copy share link"
-            style={{ borderRadius: 'var(--radius-s)' }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
@@ -168,7 +178,6 @@ export const ToolView: React.FC<ToolViewProps> = ({
             className={`btn ${isFocusMode ? 'primary' : 'ghost'} small`}
             onClick={() => setIsFocusMode(!isFocusMode)}
             title={isFocusMode ? 'Exit Fullscreen' : 'Fullscreen / Focus Mode'}
-            style={{ borderRadius: 'var(--radius-s)' }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               {isFocusMode ? (
@@ -177,8 +186,27 @@ export const ToolView: React.FC<ToolViewProps> = ({
                 <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
               )}
             </svg>
-            <span>{isFocusMode ? 'Exit Fullscreen' : 'Focus Mode'}</span>
+            <span>{isFocusMode ? 'Exit' : 'Focus'}</span>
           </button>
+
+          {/* Pin to Top Button */}
+          {onTogglePin && (
+            <button
+              type="button"
+              className={`btn ${isPinned ? 'primary' : 'ghost'} small`}
+              id="toolViewPinBtn"
+              aria-pressed={isPinned}
+              aria-label={isPinned ? 'Unpin tool from top' : 'Pin tool to top'}
+              title={isPinned ? 'Unpin tool from top' : 'Pin tool to top of Home & All Tools'}
+              onClick={onTogglePin}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill={isPinned ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="17" x2="12" y2="22" />
+                <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z" />
+              </svg>
+              <span>{isPinned ? (language === 'hi' ? 'पिन है' : 'Pinned') : (language === 'hi' ? 'पिन' : 'Pin')}</span>
+            </button>
+          )}
 
           {/* Favorite Button */}
           <button

@@ -33,12 +33,40 @@ async function saveFile(filename, data, mime){
   }catch(e){ return false; }
 }
 
+async function safeCopy(text){
+  const str = String(text != null ? text : '');
+  let ok = false;
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(str);
+      ok = true;
+    }
+  } catch(e){}
+  if (!ok) {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = str;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      ta.style.top = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      ok = document.execCommand('copy');
+      ta.remove();
+    } catch(e){}
+  }
+  return !!ok;
+}
+
 function copyBtn(getText){
   const b=document.createElement('button');
   b.type='button'; b.className='btn ghost small'; b.textContent=T('ui.copy');
   b.addEventListener('click', async ()=>{
-    try{ await navigator.clipboard.writeText(getText()); flash(b,T('ui.copied')); }
-    catch(e){ flash(b,T('ui.couldNotCopy')); }
+    const text = typeof getText === 'function' ? getText() : getText;
+    const ok = await safeCopy(text);
+    if (ok) flash(b, T('ui.copied'));
+    else flash(b, T('ui.couldNotCopy'));
   });
   return b;
 }
@@ -1441,8 +1469,8 @@ TEXT_TOOLS.push({
       $grid.innerHTML = list.slice(0,300).map(e=>`<button type="button" class="btn ghost ejBtn" data-e="${esc(e.e)}" title="${esc(e.k)}" style="font-size:22px;padding:8px 0">${e.e}</button>`).join('') || '<p class="hint">No matches.</p>';
       $grid.querySelectorAll('.ejBtn').forEach(btn=>{
         btn.addEventListener('click', async ()=>{
-          try{ await navigator.clipboard.writeText(btn.dataset.e); hint.textContent = 'Copied '+btn.dataset.e; }
-          catch(e){ hint.textContent = 'Could not copy.'; }
+          const ok = await safeCopy(btn.dataset.e);
+          hint.textContent = ok ? 'Copied ' + btn.dataset.e : 'Could not copy.';
         });
       });
     }
@@ -6243,8 +6271,9 @@ PRODUCTIVITY_TOOLS.push({
     }
     c.querySelector('#rqNext').addEventListener('click', next);
     c.querySelector('#rqCopy').addEventListener('click', async (e)=>{
-      try{ await navigator.clipboard.writeText(current); flash(e.currentTarget, T('ui.copied')); }
-      catch(err){ flash(e.currentTarget, T('ui.couldNotCopy')); }
+      const ok = await safeCopy(current);
+      if (ok) flash(e.currentTarget, T('ui.copied'));
+      else flash(e.currentTarget, T('ui.couldNotCopy'));
     });
     next();
   }

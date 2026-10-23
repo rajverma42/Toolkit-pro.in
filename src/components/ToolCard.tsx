@@ -6,8 +6,10 @@ import { getToolName, getToolDesc, t } from '../data/i18n';
 interface ToolCardProps {
   tool: Tool;
   isFav: boolean;
+  isPinned?: boolean;
   language: Language;
   onToggleFav: (id: string, e: React.MouseEvent) => void;
+  onTogglePin?: (id: string, e: React.MouseEvent) => void;
   onSelect: (id: string) => void;
 }
 
@@ -17,8 +19,10 @@ const FAV_HEART_PATH =
 export const ToolCard: React.FC<ToolCardProps> = ({
   tool,
   isFav,
+  isPinned = false,
   language,
   onToggleFav,
+  onTogglePin,
   onSelect,
 }) => {
   const cat = categories[tool.cat] || { label: tool.cat, varName: '--accent', icon: 'dev' };
@@ -26,11 +30,14 @@ export const ToolCard: React.FC<ToolCardProps> = ({
   const desc = getToolDesc(tool, language);
   const catLabel = t(`cat.${tool.cat}`, language) || cat.label;
   const favLabel = isFav ? t('ui.removeFromFav', language) || 'Remove from favourites' : t('ui.addToFav', language) || 'Add to favourites';
+  const pinLabel = isPinned
+    ? language === 'hi' ? 'अनपिन करें' : 'Unpin from top'
+    : language === 'hi' ? 'शीर्ष पर पिन करें' : 'Pin to top';
   const iconPath = icons[cat.icon] || icons['dev'] || '';
 
   return (
     <div
-      className="tool-card"
+      className={`tool-card ${isPinned ? 'is-pinned' : ''}`}
       style={{ ['--cat-color' as string]: `var(${cat.varName})` }}
       data-id={tool.id}
       onClick={() => onSelect(tool.id)}
@@ -38,26 +45,50 @@ export const ToolCard: React.FC<ToolCardProps> = ({
       tabIndex={0}
       onKeyDown={(e) => e.key === 'Enter' && onSelect(tool.id)}
     >
-      <button
-        type="button"
-        className={`card-fav-btn ${isFav ? 'active' : ''}`}
-        aria-pressed={isFav}
-        aria-label={favLabel}
-        title={favLabel}
-        onClick={(e) => onToggleFav(tool.id, e)}
-      >
-        <svg
-          viewBox="0 0 24 24"
-          fill={isFav ? 'currentColor' : 'none'}
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinejoin="round"
+      <div className="card-top-actions" onClick={(e) => e.stopPropagation()}>
+        {onTogglePin && (
+          <button
+            type="button"
+            className={`card-pin-btn ${isPinned ? 'active' : ''}`}
+            aria-pressed={isPinned}
+            aria-label={pinLabel}
+            title={pinLabel}
+            onClick={(e) => onTogglePin(tool.id, e)}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill={isPinned ? 'currentColor' : 'none'}
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="12" y1="17" x2="12" y2="22" />
+              <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z" />
+            </svg>
+          </button>
+        )}
+        <button
+          type="button"
+          className={`card-fav-btn ${isFav ? 'active' : ''}`}
+          aria-pressed={isFav}
+          aria-label={favLabel}
+          title={favLabel}
+          onClick={(e) => onToggleFav(tool.id, e)}
         >
-          <path d={FAV_HEART_PATH} />
-        </svg>
-      </button>
+          <svg
+            viewBox="0 0 24 24"
+            fill={isFav ? 'currentColor' : 'none'}
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinejoin="round"
+          >
+            <path d={FAV_HEART_PATH} />
+          </svg>
+        </button>
+      </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingRight: 28 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingRight: 64, flexWrap: 'wrap' }}>
         <div className="tool-icon">
           <svg
             viewBox="0 0 24 24"
@@ -69,6 +100,25 @@ export const ToolCard: React.FC<ToolCardProps> = ({
             dangerouslySetInnerHTML={{ __html: iconPath }}
           />
         </div>
+        {isPinned && (
+          <span
+            style={{
+              fontSize: '10.5px',
+              fontWeight: 700,
+              padding: '2px 7px',
+              borderRadius: '999px',
+              background: 'color-mix(in srgb, var(--accent) 18%, transparent)',
+              color: 'var(--accent)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 3,
+              letterSpacing: '0.02em',
+              border: '1px solid color-mix(in srgb, var(--accent) 35%, transparent)',
+            }}
+          >
+            📌 {language === 'hi' ? 'पिन' : 'Pinned'}
+          </span>
+        )}
         {tool.isPopular && (
           <span
             style={{

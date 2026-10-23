@@ -9,6 +9,7 @@ interface CommandPaletteProps {
   onSelectTool: (id: string) => void;
   language: Language;
   favorites: string[];
+  pinned?: string[];
   recent: string[];
 }
 
@@ -18,6 +19,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   onSelectTool,
   language,
   favorites,
+  pinned = [],
   recent,
 }) => {
   const [query, setQuery] = useState('');
@@ -45,9 +47,14 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 
   const filteredTools: Tool[] = query
     ? allTools.filter((tool) => matches(tool, query)).slice(0, 40)
-    : recent
+    : pinned
         .map((id) => allTools.find((t) => t.id === id))
         .filter((t): t is Tool => Boolean(t))
+        .concat(
+          recent
+            .map((id) => allTools.find((t) => t.id === id))
+            .filter((t): t is Tool => Boolean(t))
+        )
         .concat(
           trendingIds
             .map((id) => allTools.find((t) => t.id === id))
@@ -307,6 +314,11 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                       >
                         {getToolName(tool, language)}
                       </span>
+                      {pinned.includes(tool.id) && (
+                        <span style={{ fontSize: '11px' }} title="Pinned tool">
+                          📌
+                        </span>
+                      )}
                       {isFav && (
                         <span style={{ color: 'var(--fav-color)', fontSize: '12px' }} title="Favourite">
                           ★

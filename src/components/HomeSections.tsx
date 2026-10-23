@@ -7,8 +7,10 @@ import { t } from '../data/i18n';
 interface HomeSectionsProps {
   language: Language;
   favorites: string[];
+  pinned: string[];
   recent: string[];
   onToggleFav: (id: string, e: React.MouseEvent) => void;
+  onTogglePin: (id: string, e: React.MouseEvent) => void;
   onSelectTool: (id: string) => void;
   onBrowseAll: () => void;
 }
@@ -16,13 +18,20 @@ interface HomeSectionsProps {
 export const HomeSections: React.FC<HomeSectionsProps> = ({
   language,
   favorites,
+  pinned,
   recent,
   onToggleFav,
+  onTogglePin,
   onSelectTool,
   onBrowseAll,
 }) => {
   const [popularCat, setPopularCat] = useState<string>('all');
   const [showAllPopular, setShowAllPopular] = useState<boolean>(false);
+
+  // Pinned tools
+  const pinnedTools = pinned
+    .map((id) => allTools.find((t) => t.id === id))
+    .filter((t): t is Tool => Boolean(t));
 
   // All popular tools in priority order
   const allPopularTools = popularToolIds
@@ -41,18 +50,42 @@ export const HomeSections: React.FC<HomeSectionsProps> = ({
     return t.cat === popularCat;
   });
 
+  // Sort popular tools so pinned popular tools appear first (overriding popular order)
+  const sortedPopularTools = [...filteredPopularTools].sort((a, b) => {
+    const aPin = pinned.includes(a.id);
+    const bPin = pinned.includes(b.id);
+    if (aPin && !bPin) return -1;
+    if (!aPin && bPin) return 1;
+    if (aPin && bPin) return pinned.indexOf(a.id) - pinned.indexOf(b.id);
+    return 0;
+  });
+
   // Limit display unless expanded
   const displayedPopular = showAllPopular
-    ? filteredPopularTools
-    : filteredPopularTools.slice(0, 12);
+    ? sortedPopularTools
+    : sortedPopularTools.slice(0, 12);
 
   const favoriteTools = favorites
     .map((id) => allTools.find((t) => t.id === id))
-    .filter((t): t is Tool => Boolean(t));
+    .filter((t): t is Tool => Boolean(t))
+    .sort((a, b) => {
+      const aPin = pinned.includes(a.id);
+      const bPin = pinned.includes(b.id);
+      if (aPin && !bPin) return -1;
+      if (!aPin && bPin) return 1;
+      return 0;
+    });
 
   const recentTools = recent
     .map((id) => allTools.find((t) => t.id === id))
-    .filter((t): t is Tool => Boolean(t));
+    .filter((t): t is Tool => Boolean(t))
+    .sort((a, b) => {
+      const aPin = pinned.includes(a.id);
+      const bPin = pinned.includes(b.id);
+      if (aPin && !bPin) return -1;
+      if (!aPin && bPin) return 1;
+      return 0;
+    });
 
   const browseAllLabel =
     language === 'hi'
@@ -71,6 +104,57 @@ export const HomeSections: React.FC<HomeSectionsProps> = ({
 
   return (
     <div id="homeView">
+      {/* Pinned Tools Section - Hoisted to the top, overriding popular/recent */}
+      {pinnedTools.length > 0 && (
+        <div className="home-section" id="pinnedSection">
+          <div className="section-head" style={{ alignItems: 'flex-start' }}>
+            <div>
+              <h2 style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span>📌 {language === 'hi' ? 'पिन किए गए टूल्स' : 'Pinned Tools'}</span>
+                <span
+                  style={{
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    padding: '2px 8px',
+                    borderRadius: '999px',
+                    background: 'color-mix(in srgb, var(--accent) 15%, transparent)',
+                    color: 'var(--accent)',
+                  }}
+                >
+                  {pinnedTools.length}
+                </span>
+              </h2>
+              <p
+                style={{
+                  margin: '4px 0 0',
+                  fontSize: '13px',
+                  color: 'var(--text-dim)',
+                  maxWidth: '640px',
+                }}
+              >
+                {language === 'hi'
+                  ? 'आपके द्वारा मैन्युअल रूप से पिन किए गए टूल्स — यह लोकप्रिय और हाल के टूल्स से ऊपर रहते हैं।'
+                  : 'Your manually pinned tools — hoisted to the top above popular and recent utilities.'}
+              </p>
+            </div>
+          </div>
+          <div className="tool-grid">
+            {pinnedTools.map((tool) => (
+              <ToolCard
+                key={`pinned-${tool.id}`}
+                tool={tool}
+                isFav={favorites.includes(tool.id)}
+                isPinned={true}
+                language={language}
+                onToggleFav={onToggleFav}
+                onTogglePin={onTogglePin}
+                onSelect={onSelectTool}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Popular Tools Section */}
       <div className="home-section" id="popularSection">
         <div className="section-head" style={{ alignItems: 'flex-start' }}>
@@ -170,8 +254,10 @@ export const HomeSections: React.FC<HomeSectionsProps> = ({
               key={tool.id}
               tool={tool}
               isFav={favorites.includes(tool.id)}
+              isPinned={pinned.includes(tool.id)}
               language={language}
               onToggleFav={onToggleFav}
+              onTogglePin={onTogglePin}
               onSelect={onSelectTool}
             />
           ))}
@@ -234,8 +320,10 @@ export const HomeSections: React.FC<HomeSectionsProps> = ({
                 key={tool.id}
                 tool={tool}
                 isFav={true}
+                isPinned={pinned.includes(tool.id)}
                 language={language}
                 onToggleFav={onToggleFav}
+                onTogglePin={onTogglePin}
                 onSelect={onSelectTool}
               />
             ))
@@ -259,8 +347,10 @@ export const HomeSections: React.FC<HomeSectionsProps> = ({
                 key={tool.id}
                 tool={tool}
                 isFav={favorites.includes(tool.id)}
+                isPinned={pinned.includes(tool.id)}
                 language={language}
                 onToggleFav={onToggleFav}
+                onTogglePin={onTogglePin}
                 onSelect={onSelectTool}
               />
             ))
